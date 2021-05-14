@@ -54,6 +54,15 @@
          $deleteAct->bindParam(':id', $this->id);
          $deleteAct->execute();
       }
+
+      public function activityIsDone() {
+
+         $actIsDone = $this->db->prepare("UPDATE activities SET done = :done WHERE id = :id");
+         $actIsDone->bindParam(':id', $this->id);
+         $actIsDone->bindParam(':done', $this->done);
+
+         $actIsDone->execute();
+      }
    }
 
 ?>

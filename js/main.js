@@ -1,6 +1,11 @@
 let app = new Vue({
    el: '#app',
    data: {
+      projectsOpt: {
+         newProject: '',
+         editInput: false,
+         editNameProj: '',
+      },
       activityOpt: {
          newActivity: {
             title: '',
@@ -19,16 +24,14 @@ let app = new Vue({
             assigned_to: '',
          },
       },
-      projectsOpt: {
-         newProject: '',
-         editInput: false,
-         editNameProj: '',
+      subActivityOpt:{
+         newSubActivity: '',
+         subActivityDone: false,
       },
-      newSubActivity: '',
+      results: [],
       searchInput: '',
       projectError: '',
       activityError: '',
-      results: [],
       createNewProj: false,
       showPage: false,
    },
@@ -37,65 +40,78 @@ let app = new Vue({
       // CRUD API
 
          // Projects
+         createNewProject() {
+            if (this.projectsOpt.newProject != '') {
+   
+               axios
+               .get('partials/ProjectController.php', {
+                     params: {
+                        newProject: this.projectsOpt.newProject
+                     }
+                  })
+                  .then( response => {
+                     this.results = response.data;
+                  });
 
-      createNewProject() {
-         if (this.projectsOpt.newProject != '') {
- 
-            axios
-            .get('partials/ProjectController.php', {
-                  params: {
-                     newProject: this.projectsOpt.newProject
-                  }
-               })
-               .then( response => {
-                  this.results = response.data;
-               });
+                  this.projectError = '';
+                  this.projectsOpt.newProject = '';
+                  this.createNewProj = false;
+            } else {
+               this.projectError = 'Questo campo non può essere vuoto';
+            }
+         },
 
-               this.projectError = '';
-               this.projectsOpt.newProject = '';
-               this.createNewProj = false;
-         } else {
-            this.projectError = 'Questo campo non può essere vuoto';
-         }
-      },
+         editProject(id) {
 
-      editProject(id) {
+            if(this.projectsOpt.editNameProj != '') {
 
-         if(this.projectsOpt.editNameProj != '') {
+               axios
+                  .get('partials/ProjectController.php', {
+                     params: {
+                        editProj: this.projectsOpt.editNameProj,
+                        idProj: id,
+                     }
+                  })
+                  .then( response => {
+                     this.results = response.data;
+                  } );
+
+                  this.projectsOpt.editNameProj = '';
+                  this.projectsOpt.editinput = false;
+            }
+         },
+
+         deleteProject(id) {
 
             axios
                .get('partials/ProjectController.php', {
                   params: {
-                     editProj: this.projectsOpt.editNameProj,
+                     deleteProj: 1,
                      idProj: id,
                   }
                })
                .then( response => {
                   this.results = response.data;
                } );
-
-               this.projectsOpt.editNameProj = '';
-               this.projectsOpt.editinput = false;
-         }
-      },
-
-      deleteProject(id) {
-
-         axios
-            .get('partials/ProjectController.php', {
-               params: {
-                  deleteProj: 1,
-                  idProj: id,
-               }
-            })
-            .then( response => {
-               this.results = response.data;
-            } )
-      },
-
+         },
          // Projects
 
          // Activities
+
+         activityDone(id, actIndex, projIndex) {
+
+            axios
+               .get('partials/ActivityController.php', {
+                  params: {
+                     actDone: this.results[projIndex].activities[actIndex].done == '0' ? '1' : '0',
+                     actId: id
+                  }
+               })
+               .then( response => {
+                  this.results = response.data;
+               } )
+         }, 
+
          createNewActivity(id) {
             if (this.activityOpt.newActivity.title != '' && this.activityOpt.newActivity.deadline != '' && this.activityOpt.newActivity.maker != '' && this.activityOpt.newActivity.assigned_to != '') {
    
@@ -139,7 +155,7 @@ let app = new Vue({
                         title: this.activityOpt.editActivity.title,
                         activityId: id,
                         deadline: this.activityOpt.editActivity.deadline,
-                        priority: this.activityOpt.editActivity.priority ? '1' : '0',
+                        priority: this.activityOpt.editActivity.priority ? '0' : '1',
                         maker: this.activityOpt.editActivity.maker,
                         assigned_to: this.activityOpt.editActivity.assigned_to,
                         text: this.activityOpt.editActivity.text,
@@ -163,33 +179,62 @@ let app = new Vue({
                this.results = response.data;
             } )
          },
-
-
          // Activities
 
 
-      // CRUD API
-
-
-
-      createNewSubActivity(id) {
-
-         if(this.newSubActivity != '') {
-
+         // SubActivities
+         subActDone(id, subActIndex, actIndex, projIndex) {
+   
             axios
-               .get('partials/createSubActivity.php', {
+               .get('partials/SubActivityController.php', {
                   params: {
-                     activity_id: id,
-                     subActivity: this.newSubActivity,
+                     subActDone: this.results[projIndex].activities[actIndex].subActivities[subActIndex].done == '0' ? '1' : '0',
+                     subActId: id
                   }
                })
                .then( response => {
                   this.results = response.data;
-               });
+               } )
+         },
+   
+         createNewSubActivity(id) {
+   
+            if(this.subActivityOpt.newSubActivity != '') {
+   
+               axios
+                  .get('partials/SubActivityController.php', {
+                     params: {
+                        activity_id: id,
+                        subActivityTitle: this.subActivityOpt.newSubActivity,
+                     }
+                  })
+                  .then( response => {
+                     this.results = response.data;
+                  });
+   
+               this.subActivityOpt.newSubActivity = '';
+            }
+         },
+   
+         deleteSubActivity(id) {
+   
+            axios
+               .get('partials/SubActivityController.php', {
+                  params: {
+                     subActId: id,
+                     deleteSubAct: 1,
+                  }
+               })
+               .then( response => {
+                  this.results = response.data;
+               } )
+         },
+         // SubActivities
 
-            this.newSubActivity = '';
-         }
-      },
+
+
+      // CRUD API
+
 
       openActivityEditForm(indexProj, indexAct) {
 
@@ -202,15 +247,13 @@ let app = new Vue({
 
          this.results[indexProj].activities[indexAct].openEditForm = true;
 
-         console.log(this.results[indexProj].activities[indexAct].openEditForm = true);
-
          this.activityOpt.editActivity.title = this.results[indexProj].activities[indexAct].title;
          this.activityOpt.editActivity.deadline = this.results[indexProj].activities[indexAct].deadline;
          this.activityOpt.editActivity.priority = this.results[indexProj].activities[indexAct].priority;
          this.activityOpt.editActivity.maker = this.results[indexProj].activities[indexAct].maker;
          this.activityOpt.editActivity.text = this.results[indexProj].activities[indexAct].text;
          this.activityOpt.editActivity.assigned_to = this.results[indexProj].activities[indexAct].assigned_to;
-      }
+      },
 
    },
    mounted() {

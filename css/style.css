@@ -36,6 +36,7 @@ header {
    width: 100%;
    height: 70px;
    background: lightgreen;
+   z-index: 3;
 }
 
 .header_search > input {
@@ -121,4 +122,21 @@ main {
 .activity_item.urgent {
    background: #f82b2b;
    color: #fff;
+}
+
+.sub_activity_item {
+   display: flex;
+   justify-content: space-between;
+   padding: 0 5px;
+   margin: 5px 0;
+   background: lightblue;
+   color: red;
+}
+
+.sub_act_done {
+   opacity: 60%;
+}
+
+.activity_done {
+   opacity: 30%;
 }
