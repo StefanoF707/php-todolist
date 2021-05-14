@@ -20,7 +20,21 @@
             <!-- /FORM PROJECT -->
          </div>
          <div class="header_search">
-            <input type="text" placeholder="Cerca" v-model="searchInput">
+            <input type="text" placeholder="Cerca" v-model="searchInput" @input.all="getSearchData">
+            <ul v-if="searchResults.projects.length > 0 || searchResults.activities.length > 0 || searchResults.sub_activities.length > 0" id="search_list">
+               <li class="search_projects">
+                  Progetti: {{ searchResults.projects.length }}
+                  <h6 v-for="searchProject in searchResults.projects">{{ searchProject }}</h6>
+               </li>
+               <li class="search_activities">
+                  Attività: {{ searchResults.activities.length }}
+                  <h6 v-for="searchActivitiy in searchResults.activities">{{ searchActivitiy }}</h6>
+               </li>
+               <li class="search_sub_activities">
+                  Sotto attività: {{ searchResults.sub_activities.length }}
+                  <h6 v-for="searchSubActivitiy in searchResults.sub_activities">{{ searchSubActivitiy }}</h6>
+               </li>
+            </ul>
          </div>
       </header>
 

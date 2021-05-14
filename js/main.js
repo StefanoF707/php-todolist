@@ -29,10 +29,15 @@ let app = new Vue({
          subActivityDone: false,
       },
       results: [],
-      searchResults: {},
+      searchResults: {
+         projects: [],
+         activities: [],
+         sub_activities: []
+      },
       searchInput: '',
       createNewProj: false,
       showPage: false,
+      searchShow: false,
    },
    methods: {
 
@@ -230,8 +235,6 @@ let app = new Vue({
          },
          // SubActivities
 
-
-
       // CRUD API
 
 
@@ -253,6 +256,24 @@ let app = new Vue({
          this.activityOpt.editActivity.text = this.results[indexProj].activities[indexAct].text;
          this.activityOpt.editActivity.assigned_to = this.results[indexProj].activities[indexAct].assigned_to;
       },
+
+      getSearchData() {
+
+         if(this.searchInput != '') {
+            axios
+               .get(`partials/DatabaseController.php?inputSearch=${this.searchInput}`)
+               .then( response => {
+                  this.searchResults = response.data;
+                  this.searchShow = true;
+               } )
+         } else {
+            this.searchResults = {
+               projects: [],
+               activities: [],
+               sub_activities: []
+            }
+         }
+      }
 
    },
    mounted() {

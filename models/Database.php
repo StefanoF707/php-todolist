@@ -22,7 +22,7 @@
 
       public function getData($table) {
 
-         $getData = $this->db->query("SELECT * FROM $table");
+         $getData = $this->db->query("SELECT * FROM $table ORDER BY id DESC");
          $allData = $getData->fetchAll(PDO::FETCH_OBJ);
          return $allData;
 

@@ -45,6 +45,29 @@ header {
    border: 0;
 }
 
+.header_search {
+   position: relative;
+}
+
+.header_search > #search_list {
+   position: absolute;
+   top: 100%;
+   left: 0;
+   width: 100%;
+   border: 1px solid #000;
+}
+
+#search_list > .search_projects {
+   background-color: lightblue;
+}
+#search_list > .search_activities {
+   background-color: lightgreen;
+}
+#search_list > .search_sub_activities {
+   background-color: red;
+}
+
+
 main {
    margin-top: 70px;
    height: 100vh;
