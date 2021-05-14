@@ -1,6 +1,6 @@
 <?php 
 
-   require_once __DIR__ . './../partials/dbSetup.php';
+   require_once __DIR__ . './Database.php';
 
    class Project extends Database {
 

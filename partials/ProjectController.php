@@ -24,7 +24,7 @@
       echo 'errore';
    }
    
-   require_once __DIR__ . './getData.php';
+   require_once __DIR__ . './DatabaseController.php';
    
 
 ?>

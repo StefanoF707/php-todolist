@@ -15,7 +15,7 @@
 
       $newSubAct->id = $_GET['subActId'];
       $newSubAct->deleteSubAct();
-      
+
    } elseif (isset($_GET['subActId']) && isset($_GET['subActDone'])) {
       
       $newSubAct->id = $_GET['subActId'];
@@ -26,5 +26,5 @@
       echo 'errore';
    }
 
-   require_once __DIR__ . './getData.php';
+   require_once __DIR__ . './DatabaseController.php';
    ?>

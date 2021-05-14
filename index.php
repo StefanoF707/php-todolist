@@ -20,7 +20,7 @@
             <!-- /FORM PROJECT -->
          </div>
          <div class="header_search">
-            <input type="text" placeholder="Cerca">
+            <input type="text" placeholder="Cerca" v-model="searchInput">
          </div>
       </header>
 
@@ -74,7 +74,6 @@
                         <textarea cols="20" rows="3" v-model="activityOpt.newActivity.text"></textarea>
                      </div>
                      <button @click="createNewActivity(result.id)">Crea</button>
-                     <h6 v-if="activityError != ''">{{ activityError }}</h6>
                   </div>
                   <!-- /FORM ACTIVITY -->
 

@@ -29,9 +29,8 @@ let app = new Vue({
          subActivityDone: false,
       },
       results: [],
+      searchResults: {},
       searchInput: '',
-      projectError: '',
-      activityError: '',
       createNewProj: false,
       showPage: false,
    },
@@ -258,7 +257,7 @@ let app = new Vue({
    },
    mounted() {
       axios
-         .get('partials/getData.php')
+         .get('partials/DatabaseController.php')
          .then( response => {
             this.results = response.data;
             this.showPage = true;
