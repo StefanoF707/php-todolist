@@ -34,10 +34,12 @@ let app = new Vue({
          activities: [],
          sub_activities: []
       },
+      massiveActivities: [],
       searchInput: '',
       createNewProj: false,
       showPage: false,
       searchShow: false,
+      massiveFormOpen: false,
    },
    methods: {
 
@@ -177,6 +179,33 @@ let app = new Vue({
             }
          },
 
+         massiveEditActivities() {
+            if (this.activityOpt.editActivity.title != '' && this.activityOpt.editActivity.deadline != '' && this.activityOpt.editActivity.maker != '' && this.activityOpt.editActivity.assigned_to != '') {
+
+               this.massiveActivities.forEach( id => {
+                  axios
+                     .get('partials/ActivityController.php', {
+                        params: {
+                           title: this.activityOpt.editActivity.title,
+                           id: id,
+                           deadline: this.activityOpt.editActivity.deadline,
+                           priority: this.activityOpt.editActivity.priority ? '0' : '1',
+                           maker: this.userLogged,
+                           assigned_to: this.activityOpt.editActivity.assigned_to,
+                           text: this.activityOpt.editActivity.text,
+                        }
+                     })
+                     .then( response => {
+                        this.results = response.data;
+                     } );
+               })
+
+               this.massiveActivities = [];
+               this.massiveFormOpen = false;
+
+            }
+         },
+
          deleteActivity(id) {
 
             axios.delete('partials/ActivityController.php', {
@@ -259,6 +288,7 @@ let app = new Vue({
          this.activityOpt.editActivity.priority = this.results[indexProj].activities[indexAct].priority;
          this.activityOpt.editActivity.text = this.results[indexProj].activities[indexAct].text;
          this.activityOpt.editActivity.assigned_to = this.results[indexProj].activities[indexAct].assigned_to;
+
       },
 
       getSearchData() {
@@ -307,6 +337,16 @@ let app = new Vue({
                      item.logged == '1' ? this.userLogged = item.name : false;
                   } )
                } );
+      },
+
+
+      removeActivityByMassive(id) {
+
+         this.massiveActivities.forEach( (item, index) => {
+            if (item == id) {
+               this.massiveActivities.splice(index, 1);
+            }
+         } )
       }
 
    },

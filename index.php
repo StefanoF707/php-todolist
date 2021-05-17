@@ -19,6 +19,40 @@
                <input type="text" v-model="projectsOpt.newProject" placeholder="Crea nuovo progetto" @keyup.enter="createNewProject">
             <!-- /FORM PROJECT -->
          </div>
+         <div v-if="massiveActivities.length > 0" class="header_massive_edit">
+            <h3>Task selezionati: {{ massiveActivities.length }} <i class="fas fa-chevron-down" @click="massiveFormOpen = !massiveFormOpen"></i> </h3>
+            <div v-if="massiveFormOpen" class="massive_form_container">
+
+               <div class="form_group">
+                  <label for="title">Titolo: </label>
+                  <input type="text" v-model="activityOpt.editActivity.title" placeholder="Nome attività">
+               </div>
+               <div class="form_group">
+                  <label for="deadline">Scadenza: </label>
+                  <input type="date" v-model="activityOpt.editActivity.deadline" >
+               </div>
+               <div class="form_group">
+                  <label for="priority">Priorità: </label>
+                  <input type="checkbox" @change="activityOpt.editActivity.priority = !activityOpt.editActivity.priority">
+               </div>
+               <div class="form_group">
+                  <label for="assigned_to">Assegnato a: </label>
+                  <select v-model="activityOpt.editActivity.assigned_to">
+                     <option value="" disabled selected="selected">Assegna a..</option>
+                     <option v-for="(user, index) in users" v-if="user.logged == '0'" :value="user.name">
+                        {{ user.name }}
+                     </option>
+                  </select>
+               </div>
+               <div class="form_group">
+                  <label for="text">Testo: </label>
+                  <textarea cols="20" rows="3" v-model="activityOpt.editActivity.text"></textarea>
+               </div>
+               <button @click="massiveEditActivities">Modifica Selezionati</button>
+
+
+            </div>
+         </div>
          <div class="header_search">
             <input type="text" placeholder="Cerca" v-model="searchInput" @input.all="getSearchData">
             <ul v-if="searchResults.projects.length > 0 || searchResults.activities.length > 0 || searchResults.sub_activities.length > 0" id="search_list">
@@ -93,6 +127,8 @@
                   <ul class="activities_list">
                      <li v-for="(activity, i) in result.activities" class="activity_item"  :class="activity.done == '1' ? 'activity_done' : '' + activity.priority == '1' ? 'urgent' : '' ">
                         <div class="activity_item_left">
+                           <i v-if="!massiveActivities.includes(activity.id)" class="fas fa-plus" @click="massiveActivities.push(activity.id)"></i>
+                           <i v-else class="fas fa-minus" @click="removeActivityByMassive(activity.id)"></i>
                            <i class="fas fa-pencil-alt" @click="openActivityEditForm(index, i)"></i>
                            <i class="fas fa-trash-alt" @click="deleteActivity(activity.id)"></i>
                            <input type="checkbox" @change="activityDone(activity.id, i, index)" :checked="activity.done == '1' ? true : false">

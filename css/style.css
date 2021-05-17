@@ -67,6 +67,19 @@ header {
    background-color: red;
 }
 
+.header_massive_edit {
+   position: relative;
+}
+
+.header_massive_edit .massive_form_container {
+   position: absolute;
+   top: 100%;
+   border: 2px solid red;
+   background-color: lightgray;
+   z-index: 2;
+   padding: 10px;
+}
+
 
 main {
    margin-top: 70px;
