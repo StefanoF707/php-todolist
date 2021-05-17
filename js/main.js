@@ -11,7 +11,6 @@ let app = new Vue({
             title: '',
             deadline: '',
             priority: false,
-            maker: '',
             text: '',
             assigned_to: '',
          },
@@ -19,7 +18,6 @@ let app = new Vue({
             title: '',
             deadline: '',
             priority: false,
-            maker: '',
             text: '',
             assigned_to: '',
          },
@@ -29,6 +27,8 @@ let app = new Vue({
          subActivityDone: false,
       },
       results: [],
+      users:[],
+      userLogged: '',
       searchResults: {
          projects: [],
          activities: [],
@@ -46,16 +46,21 @@ let app = new Vue({
          // Projects
          createNewProject() {
             if (this.projectsOpt.newProject != '') {
-   
-               axios
-               .get('partials/ProjectController.php', {
-                     params: {
-                        newProject: this.projectsOpt.newProject
-                     }
-                  })
-                  .then( response => {
-                     this.results = response.data;
-                  });
+
+                  let bodyFormData = new FormData();
+                  bodyFormData.append('name', this.projectsOpt.newProject);
+
+                  axios({
+                     method: 'post',
+                     url: './partials/ProjectController.php',
+                     data: bodyFormData,
+                     headers: { "Content-Type": "multipart/form-data" },
+                   })
+                     .then( response => {
+                        this.results = response.data;
+                        console.log(response);
+                     } );
+                 
 
                   this.projectError = '';
                   this.projectsOpt.newProject = '';
@@ -72,13 +77,14 @@ let app = new Vue({
                axios
                   .get('partials/ProjectController.php', {
                      params: {
-                        editProj: this.projectsOpt.editNameProj,
-                        idProj: id,
+                        name: this.projectsOpt.editNameProj,
+                        id: id,
                      }
                   })
                   .then( response => {
                      this.results = response.data;
                   } );
+
 
                   this.projectsOpt.editNameProj = '';
                   this.projectsOpt.editinput = false;
@@ -88,10 +94,9 @@ let app = new Vue({
          deleteProject(id) {
 
             axios
-               .get('partials/ProjectController.php', {
+               .delete('partials/ProjectController.php', {
                   params: {
-                     deleteProj: 1,
-                     idProj: id,
+                     id: id,
                   }
                })
                .then( response => {
@@ -107,8 +112,8 @@ let app = new Vue({
             axios
                .get('partials/ActivityController.php', {
                   params: {
-                     actDone: this.results[projIndex].activities[actIndex].done == '0' ? '1' : '0',
-                     actId: id
+                     done: this.results[projIndex].activities[actIndex].done == '0' ? '1' : '0',
+                     id: id
                   }
                })
                .then( response => {
@@ -118,21 +123,23 @@ let app = new Vue({
 
          createNewActivity(id) {
             if (this.activityOpt.newActivity.title != '' && this.activityOpt.newActivity.deadline != '' && this.activityOpt.newActivity.maker != '' && this.activityOpt.newActivity.assigned_to != '') {
+
+               let bodyFormData = new FormData();
+               bodyFormData.append('title', this.activityOpt.newActivity.title);
+               bodyFormData.append('project_id', id);
+               bodyFormData.append('deadline', this.activityOpt.newActivity.deadline);
+               bodyFormData.append('priority', this.activityOpt.newActivity.priority ? '1' : '0');
+               bodyFormData.append('maker', this.userLogged);
+               bodyFormData.append('assigned_to', this.activityOpt.newActivity.assigned_to);
+               bodyFormData.append('text', this.activityOpt.newActivity.text);
    
                this.activityError = '';
    
-               axios
-                  .get('partials/ActivityController.php', {
-                     params: {
-                        title: this.activityOpt.newActivity.title,
-                        project_id: id,
-                        deadline: this.activityOpt.newActivity.deadline,
-                        priority: this.activityOpt.newActivity.priority ? '1' : '0',
-                        maker: this.activityOpt.newActivity.maker,
-                        assigned_to: this.activityOpt.newActivity.assigned_to,
-                        text: this.activityOpt.newActivity.text,
-                        createAct: 1,
-                     }
+               axios({
+                  method: 'post',
+                  url: './partials/ActivityController.php',
+                  data: bodyFormData,
+                  headers: { "Content-Type": "multipart/form-data" },
                   })
                   .then( response => {
                      this.results = response.data;
@@ -140,7 +147,6 @@ let app = new Vue({
    
                   this.activityOpt.newActivity.title = '';
                   this.activityOpt.newActivity.deadline = '';
-                  this.activityOpt.newActivity.maker = '';
                   this.activityOpt.newActivity.priority = false;
                   this.activityOpt.newActivity.assigned_to = '';
                   this.activityOpt.newActivity.text = '';
@@ -157,13 +163,12 @@ let app = new Vue({
                   .get('partials/ActivityController.php', {
                      params: {
                         title: this.activityOpt.editActivity.title,
-                        activityId: id,
+                        id: id,
                         deadline: this.activityOpt.editActivity.deadline,
                         priority: this.activityOpt.editActivity.priority ? '0' : '1',
-                        maker: this.activityOpt.editActivity.maker,
+                        maker: this.userLogged,
                         assigned_to: this.activityOpt.editActivity.assigned_to,
                         text: this.activityOpt.editActivity.text,
-                        editAct: 1,
                      }
                   })
                   .then( response => {
@@ -174,10 +179,9 @@ let app = new Vue({
 
          deleteActivity(id) {
 
-            axios.get('partials/ActivityController.php', {
+            axios.delete('partials/ActivityController.php', {
                params: {
-                  deleteAct: 1,
-                  activityId: id
+                  id: id
                }
             }).then( response => {
                this.results = response.data;
@@ -192,8 +196,8 @@ let app = new Vue({
             axios
                .get('partials/SubActivityController.php', {
                   params: {
-                     subActDone: this.results[projIndex].activities[actIndex].subActivities[subActIndex].done == '0' ? '1' : '0',
-                     subActId: id
+                     done: this.results[projIndex].activities[actIndex].subActivities[subActIndex].done == '0' ? '1' : '0',
+                     id: id
                   }
                })
                .then( response => {
@@ -204,17 +208,20 @@ let app = new Vue({
          createNewSubActivity(id) {
    
             if(this.subActivityOpt.newSubActivity != '') {
-   
-               axios
-                  .get('partials/SubActivityController.php', {
-                     params: {
-                        activity_id: id,
-                        subActivityTitle: this.subActivityOpt.newSubActivity,
-                     }
+
+               let bodyFormData = new FormData();
+               bodyFormData.append('title', this.subActivityOpt.newSubActivity);
+               bodyFormData.append('activity_id', id);
+
+               axios({
+                  method: 'post',
+                  url: 'partials/SubActivityController.php',
+                  data: bodyFormData,
+                  headers: { "Content-Type": "multipart/form-data" },
                   })
                   .then( response => {
                      this.results = response.data;
-                  });
+                  } );
    
                this.subActivityOpt.newSubActivity = '';
             }
@@ -223,10 +230,9 @@ let app = new Vue({
          deleteSubActivity(id) {
    
             axios
-               .get('partials/SubActivityController.php', {
+               .delete('partials/SubActivityController.php', {
                   params: {
-                     subActId: id,
-                     deleteSubAct: 1,
+                     id: id,
                   }
                })
                .then( response => {
@@ -243,7 +249,6 @@ let app = new Vue({
          this.results.forEach( project => {
             project.activities.forEach( activity => {
                activity.openEditForm = false;
-               console.log(activity.openEditForm);
             } )
          } );
 
@@ -252,7 +257,6 @@ let app = new Vue({
          this.activityOpt.editActivity.title = this.results[indexProj].activities[indexAct].title;
          this.activityOpt.editActivity.deadline = this.results[indexProj].activities[indexAct].deadline;
          this.activityOpt.editActivity.priority = this.results[indexProj].activities[indexAct].priority;
-         this.activityOpt.editActivity.maker = this.results[indexProj].activities[indexAct].maker;
          this.activityOpt.editActivity.text = this.results[indexProj].activities[indexAct].text;
          this.activityOpt.editActivity.assigned_to = this.results[indexProj].activities[indexAct].assigned_to;
       },
@@ -273,15 +277,41 @@ let app = new Vue({
                sub_activities: []
             }
          }
+      },
+
+
+      getData() {
+         axios
+            .get('partials/DatabaseController.php')
+            .then( response => {
+               this.results = response.data;
+               this.showPage = true;
+            } );
+      },
+
+      getUsers() {
+
+         let bodyFormData = new FormData();
+         bodyFormData.append('users', 1);
+
+            axios({
+               method: 'post',
+               url: 'partials/DatabaseController.php',
+               data: bodyFormData,
+               headers: { "Content-Type": "multipart/form-data" },
+             })
+               .then( response => {
+                  this.users = response.data;
+
+                  this.users.forEach( item => {
+                     item.logged == '1' ? this.userLogged = item.name : false;
+                  } )
+               } );
       }
 
    },
    mounted() {
-      axios
-         .get('partials/DatabaseController.php')
-         .then( response => {
-            this.results = response.data;
-            this.showPage = true;
-         } )
+      this.getData();
+      this.getUsers();
    }
 });

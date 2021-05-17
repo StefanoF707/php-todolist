@@ -2,40 +2,23 @@
 
    require_once __DIR__ . './../models/Activity.php';
 
-   $newAct = new Activity();
+   $activity = new Activity();
 
-   if(isset($_GET['title']) && isset($_GET['project_id']) && isset($_GET['deadline']) && isset($_GET['maker']) && isset($_GET['assigned_to']) && isset($_GET['createAct'])) {
+   if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-      $newAct->title = $_GET['title'];
-      $newAct->project_id = $_GET['project_id'];
-      $newAct->deadline = $_GET['deadline'];
-      $newAct->priority = $_GET['priority'];
-      $newAct->maker = $_GET['maker'];
-      $newAct->assigned_to = $_GET['assigned_to'];
-      $newAct->text = $_GET['text'];
-      $newAct->storeActivity();
+      $activity->storeActivity($_REQUEST);
    
-   } elseif (isset($_GET['title']) && isset($_GET['activityId']) && isset($_GET['deadline']) && isset($_GET['maker']) && isset($_GET['assigned_to']) && isset($_GET['editAct'])) {
+   } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['title'])) {
 
-      $newAct->title = $_GET['title'];
-      $newAct->id = $_GET['activityId'];
-      $newAct->deadline = $_GET['deadline'];
-      $newAct->priority = $_GET['priority'];
-      $newAct->maker = $_GET['maker'];
-      $newAct->assigned_to = $_GET['assigned_to'];
-      $newAct->text = $_GET['text'];
+      $activity->editActivity($_REQUEST);
 
-      $newAct->editActivity();
-   } elseif (isset($_GET['deleteAct']) && isset($_GET['activityId'])) {
+   } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
-      $newAct->id = $_GET['activityId'];
-      $newAct->deleteActivity();
+      $activity->deleteActivity($_REQUEST);
 
-   } elseif (isset($_GET['actDone']) && isset($_GET['actId'])) {
+   } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['done'])) {
 
-      $newAct->id = $_GET['actId'];
-      $newAct->done = $_GET['actDone'];
-      $newAct->activityIsDone();
+      $activity->activityIsDone($_REQUEST);
 
    } else {
       echo 'errore';

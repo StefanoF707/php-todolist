@@ -1,25 +1,22 @@
 <?php 
 
    require_once __DIR__ . './../models/Project.php';
+   $project = new Project();
 
-   if(isset($_GET['newProject'])) {
+   
+   if($_SERVER['REQUEST_METHOD'] === 'POST') {
       
-      $newProject = new Project($_GET['newProject']);
-      $newProject->storeProject();
+      $project->storeProject($_REQUEST);
 
       
-   } elseif(isset($_GET['editProj']) && isset($_GET['idProj'])) {
+   } elseif($_SERVER['REQUEST_METHOD'] === 'GET') {
       
-      $editProject = new Project($_GET['editProj']);
-      $editProject->id = $_GET['idProj'];
-      $editProject->editProject();
+      $project->editProject($_REQUEST);
       
-   } elseif(isset($_GET['deleteProj']) && isset($_GET['idProj'])) {
+   } elseif($_SERVER['REQUEST_METHOD'] === 'DELETE') {
       
-      $deleteProject = new Project($_GET['deleteProj']);
-      $deleteProject->id = $_GET['idProj'];
-      $deleteProject->deleteProject();
-      
+      $project->deleteProject($_REQUEST);
+
    } else {
       echo 'errore';
    }

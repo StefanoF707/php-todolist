@@ -4,64 +4,96 @@
 
    class Activity extends Database {
 
-      public $id;
-      public $project_id;
-      public $title;
-      public $text;
-      public $deadline;
-      public $priority;
-      public $maker; 
-      public $assigned_to;
-      public $done;
-
       function __construct() {
          $this->dbConnect();
       }
 
-      public function storeActivity() {
+
+      /**
+       *  Store activity
+       * 
+       * Crea una nuova attività
+       * 
+       *  @param array $request  Array arriva dal form
+       *  
+       * @return bool
+       */
+      public function storeActivity($request) {
 
          $createAct = $this->db->prepare("INSERT INTO activities (project_id, title, text, deadline, priority, maker, assigned_to) VALUES (:project_id, :title, :text, :deadline, :priority, :maker, :assigned_to)");
 
-         $createAct->bindParam(':project_id', $this->project_id);
-         $createAct->bindParam(':title', $this->title);
-         $createAct->bindParam(':deadline', $this->deadline);
-         $createAct->bindParam(':priority', $this->priority);
-         $createAct->bindParam(':maker', $this->maker);
-         $createAct->bindParam(':assigned_to', $this->assigned_to);
-         $createAct->bindParam(':text', $this->text);
+         $createAct->bindParam(':project_id', $request['project_id']);
+         $createAct->bindParam(':title', $request['title']);
+         $createAct->bindParam(':deadline', $request['deadline']);
+         $createAct->bindParam(':priority', $request['priority']);
+         $createAct->bindParam(':maker', $request['maker']);
+         $createAct->bindParam(':assigned_to', $request['assigned_to']);
+         $createAct->bindParam(':text', $request['text']);
 
-         $createAct->execute();
+         return $createAct->execute();
       }
 
-      public function editActivity() {
+
+      /**
+       *  Edit activity
+       * 
+       * Modifica l'attività esistente
+       * 
+       *  @param array $request Array arriva dal form
+       *  
+       * @return bool
+       */
+      public function editActivity($request) {
 
          $editAct = $this->db->prepare("UPDATE activities SET title = :title, deadline = :deadline, priority = :priority, maker = :maker, assigned_to = :assigned_to, text = :text WHERE id = :id");
 
-         $editAct->bindParam(':title', $this->title);
-         $editAct->bindParam(':deadline', $this->deadline);
-         $editAct->bindParam(':priority', $this->priority);
-         $editAct->bindParam(':maker', $this->maker);
-         $editAct->bindParam(':assigned_to', $this->assigned_to);
-         $editAct->bindParam(':text', $this->text);
-         $editAct->bindParam(':id', $this->id);
+         $editAct->bindParam(':title', $request['title']);
+         $editAct->bindParam(':deadline', $request['deadline']);
+         $editAct->bindParam(':priority', $request['priority']);
+         $editAct->bindParam(':maker', $request['maker']);
+         $editAct->bindParam(':assigned_to', $request['assigned_to']);
+         $editAct->bindParam(':text', $request['text']);
+         $editAct->bindParam(':id', $request['id']);
 
-         $editAct->execute();
+         return $editAct->execute();
 
       }
 
-      public function deleteActivity() {
+
+      /**
+       *  Delete activity
+       * 
+       * Elimina l'attività selezionata dal db
+       * 
+       *  @param array $request  Array arriva dal form
+       *  
+       * @return bool
+       */
+      public function deleteActivity($request) {
          $deleteAct = $this->db->prepare("DELETE FROM activities WHERE id = :id");
-         $deleteAct->bindParam(':id', $this->id);
-         $deleteAct->execute();
+         $deleteAct->bindParam(':id', $request['id']);
+         return $deleteAct->execute();
       }
 
-      public function activityIsDone() {
+
+
+
+      /**
+       *  Activity is done
+       * 
+       * Gestisce il completamento di una determinata attività
+       * 
+       *  @param array $request  Array arriva dalla chiamata API
+       *  
+       * @return bool
+       */
+      public function activityIsDone($request) {
 
          $actIsDone = $this->db->prepare("UPDATE activities SET done = :done WHERE id = :id");
-         $actIsDone->bindParam(':id', $this->id);
-         $actIsDone->bindParam(':done', $this->done);
+         $actIsDone->bindParam(':id', $request['id']);
+         $actIsDone->bindParam(':done', $request['done']);
 
-         $actIsDone->execute();
+         return $actIsDone->execute();
       }
    }
 

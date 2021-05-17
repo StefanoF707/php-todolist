@@ -11,6 +11,11 @@
          $this->dbConnect();
       }
 
+      /**
+       * DB Connect
+       * 
+       * Inizializza la sessione PDO collegando il db inerente al progetto
+       */
       protected function dbConnect() {
          try {
             $this->db = new PDO ("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password);
@@ -20,6 +25,16 @@
          }
       }
 
+
+      /**
+       * Get Data
+       * 
+       * Permette di ottenere i dati di ogni tabella dal db
+       * 
+       * @param $table Stringa che specifica da quale tabella vanno estratti i dati
+       * 
+       * @return array
+       */
       public function getData($table) {
 
          $getData = $this->db->query("SELECT * FROM $table ORDER BY id DESC");
@@ -28,6 +43,16 @@
 
       }
 
+
+      /**
+       * Get Search Data
+       * 
+       * Metodo di ricerca in base all'input utente
+       * 
+       * @param $tableName: nome della tabella, $record: il nome della colonna che si vuole ottenere, $input: Input dell'utente che arriva dal form
+       * 
+       * @return array
+       */
       public function getSearchData($tableName, $record, $input) {
 
          $dataArray = [];

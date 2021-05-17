@@ -15,11 +15,17 @@
       echo json_encode($searchResults);
       
 
-   } else {
+   } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['users'])) {
+
+      $allUsers = $db->getData('users');
+      
+      echo json_encode($allUsers);
+   }  else {
 
       $allProjects = $db->getData('projects');
       $allActivities = $db->getData('activities');
       $allSubActivities = $db->getData('sub_activities');
+      
 
       foreach($allProjects as $project) {
          $project->activities = [];
@@ -42,6 +48,8 @@
          }
 
       }
+
+
       echo json_encode($allProjects);
    }
 

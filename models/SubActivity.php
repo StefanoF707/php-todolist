@@ -13,31 +13,63 @@
          $this->dbConnect();
       }
 
-      public function storeSubActivity() {
+
+      /**
+       * Store SubActivity
+       * 
+       * Permette di salvare una nuova sotto-attività
+       * 
+       * @param $request: I dati che arrivano dal form
+       * 
+       * @return bool
+       */
+
+      public function storeSubActivity($request) {
 
          $createSubAct = $this->db->prepare("INSERT INTO sub_activities (activity_id, title) VALUES (:activity_id, :title)");
 
-         $createSubAct->bindParam(':activity_id', $this->activity_id);
-         $createSubAct->bindParam(':title', $this->title);
+         $createSubAct->bindParam(':activity_id', $request['activity_id']);
+         $createSubAct->bindParam(':title', $request['title']);
 
-         $createSubAct->execute();
+         return $createSubAct->execute();
       }
 
-      public function deleteSubAct() {
+
+
+      /**
+       * Delete SubActivity
+       * 
+       * Permette di eliminare una sotto-attività esistente
+       * 
+       * @param $request: I dati che arrivano dal form
+       * 
+       * @return bool
+       */
+      public function deleteSubAct($request) {
 
          $deleteSubAct = $this->db->prepare("DELETE FROM sub_activities WHERE id = :id");
-         $deleteSubAct->bindParam(':id', $this->id);
+         $deleteSubAct->bindParam(':id', $request['id']);
 
-         $deleteSubAct->execute();
+         return $deleteSubAct->execute();
       }
 
-      public function subActIsDone() {
+
+      /**
+       * SubActivity is done
+       * 
+       * Permette di gestire il completamente di una sotto-attività
+       * 
+       * @param $request: I dati che arrivano dal form
+       * 
+       * @return bool
+       */
+      public function subActIsDone($request) {
 
          $subActIsDone = $this->db->prepare("UPDATE sub_activities SET done = :done WHERE id = :id");
-         $subActIsDone->bindParam(':done', $this->done);
-         $subActIsDone->bindParam(':id', $this->id);
+         $subActIsDone->bindParam(':done', $request['done']);
+         $subActIsDone->bindParam(':id', $request['id']);
 
-         $subActIsDone->execute();
+         return $subActIsDone->execute();
       }
    }
 ?>

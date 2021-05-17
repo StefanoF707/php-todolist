@@ -76,12 +76,11 @@
                         <input type="checkbox" v-model="activityOpt.newActivity.priority">
                      </div>
                      <div class="form_group">
-                        <label for="maker">Creatore: </label>
-                        <input type="text" v-model="activityOpt.newActivity.maker" placeholder="creatore">
-                     </div>
-                     <div class="form_group">
                         <label for="assigned_to">Assegnato a: </label>
-                        <input type="text" v-model="activityOpt.newActivity.assigned_to" placeholder="assegnato a..">
+                        <select v-model="activityOpt.newActivity.assigned_to">
+                           <option value="" disabled selected="selected">Assegna a..</option>
+                           <option v-for="(user, index) in users" v-if="user.logged == '0'" :value="user.name">{{ user.name }}</option>
+                        </select>
                      </div>
                      <div class="form_group">
                         <label for="text">Testo: </label>
@@ -136,12 +135,13 @@
                               <input type="checkbox" @change="activityOpt.editActivity.priority = !activityOpt.editActivity.priority" :checked="activity.priority == '1' ? true : false">
                            </div>
                            <div class="form_group">
-                              <label for="maker">Creatore: </label>
-                              <input type="text" placeholder="creatore" v-model="activityOpt.editActivity.maker">
-                           </div>
-                           <div class="form_group">
                               <label for="assigned_to">Assegnato a: </label>
-                              <input type="text" placeholder="assegnato a..." v-model="activityOpt.editActivity.assigned_to">
+                              <select v-model="activityOpt.editActivity.assigned_to">
+                                 <option value="" disabled selected="selected">Assegna a..</option>
+                                 <option v-for="(user, index) in users" v-if="user.logged == '0'" :value="user.name">
+                                    {{ user.name }}
+                                 </option>
+                              </select>
                            </div>
                            <div class="form_group">
                               <label for="text">Testo: </label>

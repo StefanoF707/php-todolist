@@ -2,25 +2,19 @@
 
    require_once __DIR__ . './../models/SubActivity.php';
 
-   $newSubAct = new SubActivity();
+   $subActivity = new SubActivity();
 
-   if (isset($_GET['subActivityTitle']) && $_GET['activity_id']) {
+   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-      $newSubAct->activity_id = $_GET['activity_id'];
-      $newSubAct->title = $_GET['subActivityTitle'];
+      $subActivity->storeSubActivity($_REQUEST);
 
-      $newSubAct->storeSubActivity();
+   } elseif($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
-   } elseif(isset($_GET['deleteSubAct']) && isset($_GET['subActId'])) {
+      $subActivity->deleteSubAct($_REQUEST);
 
-      $newSubAct->id = $_GET['subActId'];
-      $newSubAct->deleteSubAct();
-
-   } elseif (isset($_GET['subActId']) && isset($_GET['subActDone'])) {
+   } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
       
-      $newSubAct->id = $_GET['subActId'];
-      $newSubAct->done = $_GET['subActDone'];
-      $newSubAct->subActIsDone();
+      $subActivity->subActIsDone($_REQUEST);
 
    } else {
       echo 'errore';
