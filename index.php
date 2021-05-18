@@ -45,30 +45,24 @@
                   </select>
                </div>
                <div class="form_group">
+                  <label for="assigned_to">Categoria:</label>
+                  <select v-model="activityOpt.editActivity.category_id">
+                     <option value="" disabled selected="selected">Categoria</option>
+                     <option v-for="(category, index) in categories" :value="category.id">
+                        {{ category.category }}
+                     </option>
+                  </select>
+               </div>
+               <div class="form_group">
                   <label for="text">Testo: </label>
                   <textarea cols="20" rows="3" v-model="activityOpt.editActivity.text"></textarea>
                </div>
                <button @click="massiveEditActivities">Modifica Selezionati</button>
-
-
             </div>
          </div>
+
          <div class="header_search">
             <input type="text" placeholder="Cerca" v-model="searchInput" @input.all="getSearchData">
-            <ul v-if="searchResults.projects.length > 0 || searchResults.activities.length > 0 || searchResults.sub_activities.length > 0" id="search_list">
-               <li class="search_projects">
-                  Progetti: {{ searchResults.projects.length }}
-                  <h6 v-for="searchProject in searchResults.projects">{{ searchProject }}</h6>
-               </li>
-               <li class="search_activities">
-                  Attività: {{ searchResults.activities.length }}
-                  <h6 v-for="searchActivitiy in searchResults.activities">{{ searchActivitiy }}</h6>
-               </li>
-               <li class="search_sub_activities">
-                  Sotto attività: {{ searchResults.sub_activities.length }}
-                  <h6 v-for="searchSubActivitiy in searchResults.sub_activities">{{ searchSubActivitiy }}</h6>
-               </li>
-            </ul>
          </div>
       </header>
 
@@ -78,7 +72,7 @@
 
          <ul v-else id="projects_list">
 
-            <li v-for="(result, index) in results" class="project_item" v-if="results">
+            <li v-for="(result, index) in searchResults.length > 0 ? searchResults : results" class="project_item" v-if="results">
                <h3>{{ result.name }}</h3>
                <div class="project_opt">
 
@@ -117,6 +111,17 @@
                         </select>
                      </div>
                      <div class="form_group">
+                        <label for="assigned_to">Categoria:</label>
+                        <select v-if="!createCategory" v-model="activityOpt.newActivity.category_id">
+                           <option value="" disabled selected="selected">Categoria</option>
+                           <option v-for="(category, index) in categories" :value="category.id">
+                              {{ category.category }}
+                           </option>
+                        </select>
+                        <input v-else type="text" v-model="newCategory">
+                        <i :class="createCategory ? 'fas fa-minus' : 'fas fa-plus' " @click="createCategory = !createCategory"></i>
+                     </div>
+                     <div class="form_group">
                         <label for="text">Testo: </label>
                         <textarea cols="20" rows="3" v-model="activityOpt.newActivity.text"></textarea>
                      </div>
@@ -136,6 +141,7 @@
                            <h3>Scadenza: {{ activity.deadline }}</h3>
                            <h4>Creato da: {{ activity.maker }}</h4>
                            <h4>Assegnato a: {{ activity.assigned_to }}</h4>
+                           <h5 v-if="activity.category != null">Categoria: {{ activity.category }}</h5>
                         </div>
 
                         <div class="activity_item_right">
@@ -176,6 +182,15 @@
                                  <option value="" disabled selected="selected">Assegna a..</option>
                                  <option v-for="(user, index) in users" v-if="user.logged == '0'" :value="user.name">
                                     {{ user.name }}
+                                 </option>
+                              </select>
+                           </div>
+                           <div class="form_group">
+                              <label for="assigned_to">Categoria:</label>
+                              <select v-model="activityOpt.editActivity.category_id">
+                                 <option value="" disabled selected="selected">Categoria</option>
+                                 <option v-for="(category, index) in categories" :value="category.id">
+                                    {{ category.category }}
                                  </option>
                               </select>
                            </div>

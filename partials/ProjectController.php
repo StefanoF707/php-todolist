@@ -3,6 +3,8 @@
    require_once __DIR__ . './../models/Project.php';
    $project = new Project();
 
+   $errors = [];
+
    
    if($_SERVER['REQUEST_METHOD'] === 'POST') {
       

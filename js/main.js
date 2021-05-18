@@ -13,6 +13,7 @@ let app = new Vue({
             priority: false,
             text: '',
             assigned_to: '',
+            category_id: "",
          },
          editActivity: {
             title: '',
@@ -20,6 +21,7 @@ let app = new Vue({
             priority: false,
             text: '',
             assigned_to: '',
+            category_id: "",
          },
       },
       subActivityOpt:{
@@ -28,22 +30,43 @@ let app = new Vue({
       },
       results: [],
       users:[],
+      categories: [],
       userLogged: '',
-      searchResults: {
-         projects: [],
-         activities: [],
-         sub_activities: []
-      },
+      searchResults: [],
       massiveActivities: [],
       searchInput: '',
       createNewProj: false,
       showPage: false,
       searchShow: false,
       massiveFormOpen: false,
+      createCategory: false,
+      newCategory: "",
    },
    methods: {
 
       // CRUD API
+
+         createNewCategory() {
+
+            if (this.newCategory != "") {
+
+               let bodyFormData = new FormData();
+               bodyFormData.append('category', this.newCategory);
+
+               axios({
+                  method: "post",
+                  url: "./partials/CategoryController.php",
+                  data: bodyFormData,
+                  headers: {"Content-Type": "multipart/form-data" },
+               })
+                  .then( response => {
+                     this.results = response.data.results;
+                     this.categories = response.data.categories;
+                  } )
+
+               this.newCategory = "";
+            }
+         },
 
          // Projects
          createNewProject() {
@@ -59,8 +82,8 @@ let app = new Vue({
                      headers: { "Content-Type": "multipart/form-data" },
                    })
                      .then( response => {
-                        this.results = response.data;
-                        console.log(response);
+                        this.results = response.data.results;
+                        this.categories = response.data.categories;
                      } );
                  
 
@@ -84,7 +107,8 @@ let app = new Vue({
                      }
                   })
                   .then( response => {
-                     this.results = response.data;
+                     this.results = response.data.results;
+                     this.categories = response.data.categories;
                   } );
 
 
@@ -102,7 +126,8 @@ let app = new Vue({
                   }
                })
                .then( response => {
-                  this.results = response.data;
+                  this.results = response.data.results;
+                  this.categories = response.data.categories;
                } );
          },
          // Projects
@@ -119,7 +144,8 @@ let app = new Vue({
                   }
                })
                .then( response => {
-                  this.results = response.data;
+                  this.results = response.data.results;
+                  this.categories = response.data.categories;
                } )
          }, 
 
@@ -134,6 +160,19 @@ let app = new Vue({
                bodyFormData.append('maker', this.userLogged);
                bodyFormData.append('assigned_to', this.activityOpt.newActivity.assigned_to);
                bodyFormData.append('text', this.activityOpt.newActivity.text);
+
+               if (this.newCategory != "" && this.createCategory) {
+                  
+                  this.createNewCategory();
+
+                  let categoryId = parseInt(this.categories[0].id) + 1;
+
+
+                  bodyFormData.append('category_id', categoryId);
+
+               } else {
+                  bodyFormData.append('category_id', this.activityOpt.newActivity.category_id);
+               }
    
                this.activityError = '';
    
@@ -144,7 +183,8 @@ let app = new Vue({
                   headers: { "Content-Type": "multipart/form-data" },
                   })
                   .then( response => {
-                     this.results = response.data;
+                     this.results = response.data.results;
+                     this.categories = response.data.categories;
                   } );
    
                   this.activityOpt.newActivity.title = '';
@@ -152,6 +192,7 @@ let app = new Vue({
                   this.activityOpt.newActivity.priority = false;
                   this.activityOpt.newActivity.assigned_to = '';
                   this.activityOpt.newActivity.text = '';
+                  this.activityOpt.newActivity.category_id = "";
             } else {
                this.activityError = 'Riempire tutti i campi'
             }
@@ -171,10 +212,12 @@ let app = new Vue({
                         maker: this.userLogged,
                         assigned_to: this.activityOpt.editActivity.assigned_to,
                         text: this.activityOpt.editActivity.text,
+                        category_id: this.activityOpt.editActivity.category_id,
                      }
                   })
                   .then( response => {
-                     this.results = response.data;
+                     this.results = response.data.results;
+                     this.categories = response.data.categories;
                   } );
             }
          },
@@ -193,10 +236,12 @@ let app = new Vue({
                            maker: this.userLogged,
                            assigned_to: this.activityOpt.editActivity.assigned_to,
                            text: this.activityOpt.editActivity.text,
+                           category_id: this.activityOpt.editActivity.category_id,
                         }
                      })
                      .then( response => {
-                        this.results = response.data;
+                        this.results = response.data.results;
+                        this.categories = response.data.categories;
                      } );
                })
 
@@ -213,7 +258,8 @@ let app = new Vue({
                   id: id
                }
             }).then( response => {
-               this.results = response.data;
+               this.results = response.data.results;
+               this.categories = response.data.categories;
             } )
          },
          // Activities
@@ -230,7 +276,8 @@ let app = new Vue({
                   }
                })
                .then( response => {
-                  this.results = response.data;
+                  this.results = response.data.results;
+                  this.categories = response.data.categories;
                } )
          },
    
@@ -249,7 +296,8 @@ let app = new Vue({
                   headers: { "Content-Type": "multipart/form-data" },
                   })
                   .then( response => {
-                     this.results = response.data;
+                     this.results = response.data.results;
+                     this.categories = response.data.categories;
                   } );
    
                this.subActivityOpt.newSubActivity = '';
@@ -265,7 +313,8 @@ let app = new Vue({
                   }
                })
                .then( response => {
-                  this.results = response.data;
+                  this.results = response.data.results;
+                  this.categories = response.data.categories;
                } )
          },
          // SubActivities
@@ -288,6 +337,7 @@ let app = new Vue({
          this.activityOpt.editActivity.priority = this.results[indexProj].activities[indexAct].priority;
          this.activityOpt.editActivity.text = this.results[indexProj].activities[indexAct].text;
          this.activityOpt.editActivity.assigned_to = this.results[indexProj].activities[indexAct].assigned_to;
+         this.activityOpt.editActivity.category_id = this.results[indexProj].activities[indexAct].category_id;
 
       },
 
@@ -300,13 +350,7 @@ let app = new Vue({
                   this.searchResults = response.data;
                   this.searchShow = true;
                } )
-         } else {
-            this.searchResults = {
-               projects: [],
-               activities: [],
-               sub_activities: []
-            }
-         }
+         } 
       },
 
 
@@ -314,7 +358,8 @@ let app = new Vue({
          axios
             .get('partials/DatabaseController.php')
             .then( response => {
-               this.results = response.data;
+               this.results = response.data.results;
+               this.categories = response.data.categories;
                this.showPage = true;
             } );
       },

@@ -43,6 +43,13 @@
 
       }
 
+      public function getJoinedData($table1, $table2, $record, $fk) {
+
+         $getJoinedData = $this->db->query("SELECT $table1.*, $table2.$record FROM $table1 LEFT JOIN $table2 ON $table1.$fk = $table2.id");
+         $allJoinedData = $getJoinedData->fetchAll(PDO::FETCH_OBJ);
+         return $allJoinedData;
+      }
+
 
       /**
        * Get Search Data
@@ -55,14 +62,9 @@
        */
       public function getSearchData($tableName, $record, $input) {
 
-         $dataArray = [];
-
-         $getData = $this->db->query("SELECT $record FROM $tableName WHERE $record LIKE '%$input%'");
-         $allData = $getData->fetchAll(PDO::FETCH_NUM);
-         foreach($allData as $data) {
-            $dataArray[] = $data[0];
-         }
-         return $dataArray;
+         $getData = $this->db->query("SELECT * FROM $tableName WHERE $record LIKE '%$input%'");
+         $allData = $getData->fetchAll(PDO::FETCH_OBJ);
+         return $allData;
       }
 
 

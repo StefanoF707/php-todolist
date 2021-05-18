@@ -20,9 +20,10 @@
        */
       public function storeActivity($request) {
 
-         $createAct = $this->db->prepare("INSERT INTO activities (project_id, title, text, deadline, priority, maker, assigned_to) VALUES (:project_id, :title, :text, :deadline, :priority, :maker, :assigned_to)");
+         $createAct = $this->db->prepare("INSERT INTO activities (project_id, category_id, title, text, deadline, priority, maker, assigned_to) VALUES (:project_id, :category_id, :title, :text, :deadline, :priority, :maker, :assigned_to)");
 
          $createAct->bindParam(':project_id', $request['project_id']);
+         $createAct->bindParam(':category_id', $request['category_id']);
          $createAct->bindParam(':title', $request['title']);
          $createAct->bindParam(':deadline', $request['deadline']);
          $createAct->bindParam(':priority', $request['priority']);
@@ -45,9 +46,10 @@
        */
       public function editActivity($request) {
 
-         $editAct = $this->db->prepare("UPDATE activities SET title = :title, deadline = :deadline, priority = :priority, maker = :maker, assigned_to = :assigned_to, text = :text WHERE id = :id");
+         $editAct = $this->db->prepare("UPDATE activities SET title = :title, category_id = :category_id, deadline = :deadline, priority = :priority, maker = :maker, assigned_to = :assigned_to, text = :text WHERE id = :id");
 
          $editAct->bindParam(':title', $request['title']);
+         $editAct->bindParam(':category_id', $request['category_id']);
          $editAct->bindParam(':deadline', $request['deadline']);
          $editAct->bindParam(':priority', $request['priority']);
          $editAct->bindParam(':maker', $request['maker']);
