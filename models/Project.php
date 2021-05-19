@@ -11,6 +11,30 @@
 
 
       /**
+       * Project Validator
+       * 
+       * Gestisce la validazione dei dati per la creazione di un nuovo progetto
+       * 
+       * @param $request: i dati provenienti dalla chaiamta axios
+       * 
+       * @return bool|array
+       */
+      public function projectValidator($request) {
+         $errors = [];
+
+         if ($request['name'] == "") {
+            $errors[] = 'Il nome del progetto non può essere vuoto';
+         }
+
+         if (count($errors) == 0) {
+            return true;
+         } else {
+            return $errors;
+         }
+      }
+
+
+      /**
        * Store projects
        * 
        * Crea un nuovo progetto
@@ -20,10 +44,11 @@
        * @return bool
        */
       public function storeProject($request) {
+
+            $createPj = $this->db->prepare("INSERT INTO projects (name) VALUES (:nameProject)");
+            $createPj->bindParam(':nameProject', $request['name']);
+            return $createPj->execute();
       
-         $createPj = $this->db->prepare("INSERT INTO projects (name) VALUES (:nameProject)");
-         $createPj->bindParam(':nameProject', $request['name']);
-         return $createPj->execute();
       }
 
 

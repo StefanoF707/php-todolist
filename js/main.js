@@ -41,6 +41,7 @@ let app = new Vue({
       massiveFormOpen: false,
       createCategory: false,
       newCategory: "",
+      errors: [],
    },
    methods: {
 
@@ -65,6 +66,7 @@ let app = new Vue({
                   } )
 
                this.newCategory = "";
+
             }
          },
 
@@ -82,16 +84,21 @@ let app = new Vue({
                      headers: { "Content-Type": "multipart/form-data" },
                    })
                      .then( response => {
-                        this.results = response.data.results;
-                        this.categories = response.data.categories;
-                     } );
-                 
 
-                  this.projectError = '';
+                        if (response.status === 200) {
+                           this.errors =[];
+                           this.results = response.data.results;
+                           this.categories = response.data.categories;
+                        } else {
+                           this.errors = response.data;
+                        }
+                     });
+                 
                   this.projectsOpt.newProject = '';
                   this.createNewProj = false;
             } else {
-               this.projectError = 'Questo campo non può essere vuoto';
+               this.errors = [];
+               this.errors.push('Il nome del progetto non può essere vuoto');
             }
          },
 
@@ -107,13 +114,22 @@ let app = new Vue({
                      }
                   })
                   .then( response => {
-                     this.results = response.data.results;
-                     this.categories = response.data.categories;
-                  } );
 
+                     if (response.status === 200) {
+                        this.errors =[];
+                        this.results = response.data.results;
+                        this.categories = response.data.categories;
+                     } else {
+                        this.errors = response.data;
+                     }
+
+                  });
 
                   this.projectsOpt.editNameProj = '';
                   this.projectsOpt.editinput = false;
+            } else {
+               this.errors = [];
+               this.errors.push('Il nome del progetto non può essere vuoto');
             }
          },
 
@@ -164,11 +180,7 @@ let app = new Vue({
                if (this.newCategory != "" && this.createCategory) {
                   
                   this.createNewCategory();
-
-                  let categoryId = parseInt(this.categories[0].id) + 1;
-
-
-                  bodyFormData.append('category_id', categoryId);
+                  bodyFormData.append('category_id', "");
 
                } else {
                   bodyFormData.append('category_id', this.activityOpt.newActivity.category_id);
@@ -183,8 +195,15 @@ let app = new Vue({
                   headers: { "Content-Type": "multipart/form-data" },
                   })
                   .then( response => {
-                     this.results = response.data.results;
-                     this.categories = response.data.categories;
+
+                     if (response.status === 200) {
+                        this.errors =[];
+                        this.results = response.data.results;
+                        this.categories = response.data.categories;
+                     } else {
+                        this.errors = response.data;
+                     }
+
                   } );
    
                   this.activityOpt.newActivity.title = '';
@@ -194,7 +213,35 @@ let app = new Vue({
                   this.activityOpt.newActivity.text = '';
                   this.activityOpt.newActivity.category_id = "";
             } else {
-               this.activityError = 'Riempire tutti i campi'
+               this.errors = [];
+               
+               if(this.activityOpt.newActivity.title == '') {
+                  this.errors.push("Il nome dell'attività non può essere vuoto");
+               }
+
+               if (this.activityOpt.newActivity.title.length > 45) {
+                  this.errors.push("Il nome dell'attività può avere massimo 45 caratteri");
+               } else {
+                  this.activityOpt.newActivity.title.length = '';
+               }
+
+               if (this.activityOpt.newActivity.deadline != dayjs(this.activityOpt.newActivity.deadline).format('YYYY-MM-DD')) {
+                  this.errors.push("La data inserita non è valida");
+               }
+
+               if (dayjs().format('YYYY-MM-DD') > this.activityOpt.newActivity.deadline){
+                  this.errors.push("Inserire una data successiva a quella corrente");
+               } else {
+                  this.activityOpt.newActivity.deadline = '';
+               }
+                  
+               if (this.activityOpt.newActivity.assigned_to == '') {
+                  this.errors.push("Assegnare il task a qualcuno");
+               } else {
+                  this.activityOpt.newActivity.assigned_to = '';
+               }
+
+
             }
    
          },
@@ -216,9 +263,38 @@ let app = new Vue({
                      }
                   })
                   .then( response => {
-                     this.results = response.data.results;
-                     this.categories = response.data.categories;
+                     if (response.status === 200) {
+                        this.errors =[];
+                        this.results = response.data.results;
+                        this.categories = response.data.categories;
+                     } else {
+                        this.errors = response.data;
+                     }
                   } );
+            } else {
+
+               this.errors = [];
+               
+               if(this.activityOpt.editActivity.title == '') {
+                  this.errors.push("Il nome dell'attività non può essere vuoto");
+               }
+
+               if (this.activityOpt.editActivity.title.length > 45) {
+                  this.errors.push("Il nome dell'attività può avere massimo 45 caratteri");
+               } 
+
+               if (this.activityOpt.editActivity.deadline != dayjs(this.activityOpt.editActivity.deadline).format('YYYY-MM-DD')) {
+                  this.errors.push("La data inserita non è valida");
+               }
+
+               if (dayjs().format('YYYY-MM-DD') > this.activityOpt.editActivity.deadline){
+                  this.errors.push("Inserire una data successiva a quella corrente");
+               }
+                  
+               if (this.activityOpt.editActivity.assigned_to == '') {
+                  this.errors.push("Assegnare il task a qualcuno");
+               }
+               
             }
          },
 
@@ -350,7 +426,9 @@ let app = new Vue({
                   this.searchResults = response.data;
                   this.searchShow = true;
                } )
-         } 
+         }  else {
+            this.searchResults = [];
+         }
       },
 
 
@@ -361,6 +439,8 @@ let app = new Vue({
                this.results = response.data.results;
                this.categories = response.data.categories;
                this.showPage = true;
+
+               console.log(dayjs().format('YYYY-MM-DD'));
             } );
       },
 

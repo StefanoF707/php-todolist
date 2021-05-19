@@ -29,7 +29,7 @@
       /**
        * Get Data
        * 
-       * Permette di ottenere i dati di ogni tabella dal db
+       * Permette di ottenere i dati della tabella indicata
        * 
        * @param $table Stringa che specifica da quale tabella vanno estratti i dati
        * 
@@ -42,6 +42,17 @@
          return $allData;
 
       }
+
+
+      /**
+       * Get joined Data
+       * 
+       * Permette di ottenere i dati tra due tabelle  collegate tra loro
+       * 
+       * @param $table1, $table2: i nomi delle due tabelle, $record: nome colonna, $fk: nome della colonna foreign key
+       * 
+       * @return array
+       */
 
       public function getJoinedData($table1, $table2, $record, $fk) {
 
@@ -65,6 +76,14 @@
          $getData = $this->db->query("SELECT * FROM $tableName WHERE $record LIKE '%$input%'");
          $allData = $getData->fetchAll(PDO::FETCH_OBJ);
          return $allData;
+      }
+
+
+      public function getNumData($table, $record, $limit) {
+
+         $getNumData = $this->db->query("SELECT $record FROM $table ORDER BY id DESC LIMIT $limit");
+         $numData = $getNumData->fetchAll(PDO::FETCH_OBJ);
+         return $numData;
       }
 
 

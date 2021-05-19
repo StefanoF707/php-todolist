@@ -39,7 +39,8 @@ header {
    z-index: 3;
 }
 
-.header_search > input {
+.header_search > input,
+.header_project > input {
    padding: 10px;
    border-radius: 50px;
    border: 0;

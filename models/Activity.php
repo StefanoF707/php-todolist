@@ -8,6 +8,64 @@
          $this->dbConnect();
       }
 
+      /**
+       * Validate date
+       * 
+       * Permette di effettuare la validazione del campo data nel formato che arriva tramite la chiamata axios
+       * 
+       * @param $date: ILa data che si vuole validare, $format: campo di default che setta il formato utile a validare la data
+       * 
+       * @return bool
+       */
+      protected function validateDate($date, $format = 'Y-m-d H:i:s')
+      {
+         $d = DateTime::createFromFormat($format, $date);
+         return $d && $d->format($format) == $date;
+      }
+
+
+      /**
+       * Activity Validator
+       * 
+       * Gestisce la validazione dei dati per la creazione di una nuova attività
+       * 
+       * @param $request: i dati provenienti dalla chaiamta axios
+       * 
+       * @return bool|array
+       */
+      public function activityValidator($request) {
+
+         $errors = [];
+
+         if ($request['title'] == "") {
+            $errors[] ="Il nome dell'attività non può essere vuoto";
+         }
+
+         if (strlen($request['title']) > 45) {
+            $errors[] ="Il nome dell'attività può avere massimo 45 caratteri";
+         }
+
+         
+         if (!$this->validateDate($request['deadline'], 'Y-m-d')) {
+            $errors[] = 'La data inserita non è valida';
+         }
+         
+         if (date("Y-m-d") > $request['deadline']) {
+            $errors[] = "Inserire una data successiva a quella corrente";
+         }
+
+         if ($request['assigned_to'] == "") {
+            $errors[]= 'Assegnare il task a qualcuno';
+         }
+
+         if (count($errors) == 0) {
+            return true;
+         } else {
+            return $errors;
+         }
+
+      }
+
 
       /**
        *  Store activity
