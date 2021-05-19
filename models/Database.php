@@ -87,6 +87,28 @@
       }
 
 
+      public function getSubData($table, $fk, $id) {
+
+         $getSubData = $this->db->query("SELECT * FROM $table WHERE $fk = $id");
+         $subData = $getSubData->fetchAll(PDO::FETCH_OBJ);
+         return $subData;
+      }
+
+      public function getNewestData($table) {
+
+         $getNewestData = $this->db->query("SELECT * FROM $table ORDER BY id DESC LIMIT 1");
+         $newestData = $getNewestData->fetch(PDO::FETCH_OBJ);
+         return $newestData;
+      }
+
+      public function getEditedData($table, $id) {
+
+         $getEditedData = $this->db->query("SELECT * FROM $table WHERE id = $id LIMIT 1");
+         $editedData = $getEditedData->fetch(PDO::FETCH_OBJ);
+         return $editedData;
+      }
+
+
    }
 
 ?>

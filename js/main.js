@@ -96,8 +96,7 @@ let app = new Vue({
 
                         if (response.status === 200) {
                            this.errors =[];
-                           this.results = response.data.results;
-                           this.categories = response.data.categories;
+                           this.results.unshift(response.data);
                         } else {
                            this.errors = response.data;
                         }
@@ -133,8 +132,11 @@ let app = new Vue({
 
                      if (response.status === 200) {
                         this.errors =[];
-                        this.results = response.data.results;
-                        this.categories = response.data.categories;
+                        this.results.forEach( (result, index) => {
+                           if (result.id == id) {
+                              this.results.splice(index, 1, response.data);
+                           }
+                        }) 
                      } else {
                         this.errors = response.data;
                      }
