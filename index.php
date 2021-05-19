@@ -33,7 +33,10 @@
                </div>
                <div class="form_group">
                   <label for="priority">Priorità: </label>
-                  <input type="checkbox" @change="activityOpt.editActivity.priority = !activityOpt.editActivity.priority">
+                  <select v-model="activityOpt.editActivity.priority">
+                     <option value="0">Bassa</option>
+                     <option value="1">Alta</option>
+                  </select>
                </div>
                <div class="form_group">
                   <label for="assigned_to">Assegnato a: </label>
@@ -110,7 +113,10 @@
                         </div>
                         <div class="form_group">
                            <label for="priority">Priorità: </label>
-                           <input type="checkbox" v-model="activityOpt.newActivity.priority">
+                           <select v-model="activityOpt.newActivity.priority">
+                              <option value="0">Bassa</option>
+                              <option value="1">Alta</option>
+                           </select>
                         </div>
                         <div class="form_group">
                            <label for="assigned_to">Assegnato a: </label>
@@ -183,7 +189,10 @@
                               </div>
                               <div class="form_group">
                                  <label for="priority">Priorità: </label>
-                                 <input type="checkbox" @change="activityOpt.editActivity.priority = !activityOpt.editActivity.priority" :checked="activity.priority == '1' ? true : false">
+                                 <select v-model="activityOpt.editActivity.priority">
+                                    <option value="0">Bassa</option>
+                                    <option value="1">Alta</option>
+                                 </select>
                               </div>
                               <div class="form_group">
                                  <label for="assigned_to">Assegnato a: </label>

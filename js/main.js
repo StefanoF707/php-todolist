@@ -10,7 +10,7 @@ let app = new Vue({
          newActivity: {
             title: '',
             deadline: '',
-            priority: false,
+            priority: 0,
             text: '',
             assigned_to: '',
             category_id: "-",
@@ -18,7 +18,7 @@ let app = new Vue({
          editActivity: {
             title: '',
             deadline: '',
-            priority: false,
+            priority: 0,
             text: '',
             assigned_to: '',
             category_id: "-",
@@ -231,10 +231,10 @@ let app = new Vue({
    
                   this.activityOpt.newActivity.title = '';
                   this.activityOpt.newActivity.deadline = '';
-                  this.activityOpt.newActivity.priority = false;
+                  this.activityOpt.newActivity.priority = 0;
                   this.activityOpt.newActivity.assigned_to = '';
                   this.activityOpt.newActivity.text = '';
-                  this.activityOpt.newActivity.category_id = "";
+                  this.activityOpt.newActivity.category_id = "-";
             } else {
                this.errors = [];
                
@@ -298,6 +298,12 @@ let app = new Vue({
                         this.errors = response.data;
                      }
                   } );
+
+                  this.activityOpt.editActivity.title = "";
+                  this.activityOpt.editActivity.deadline = "";
+                  this.activityOpt.editActivity.assigned_to = "";
+                  this.activityOpt.editActivity.title = "";
+                  this.activityOpt.editActivity.category_id = "-";
             } else {
 
                this.errors = [];
@@ -335,7 +341,7 @@ let app = new Vue({
                            title: this.activityOpt.editActivity.title,
                            id: id,
                            deadline: this.activityOpt.editActivity.deadline,
-                           priority: this.activityOpt.editActivity.priority ? '0' : '1',
+                           priority: this.activityOpt.editActivity.priority == 0 ? '0' : '1',
                            maker: this.userLogged,
                            assigned_to: this.activityOpt.editActivity.assigned_to,
                            text: this.activityOpt.editActivity.text,
@@ -355,6 +361,13 @@ let app = new Vue({
 
                this.massiveActivities = [];
                this.massiveFormOpen = false;
+
+               this.activityOpt.editActivity.title = "";
+               this.activityOpt.editActivity.deadline = "";
+               this.activityOpt.editActivity.assigned_to = "";
+               this.activityOpt.editActivity.title = "";
+               this.activityOpt.editActivity.category_id = "-";
+
 
             } else {
                
