@@ -26,6 +26,10 @@
             $errors[] = 'Il nome del progetto non può essere vuoto';
          }
 
+         if (strlen($request['name']) > 45) {
+            $errors[] = 'Il nome del progetto non può essere più lungo di 45 caratteri';
+         }
+
          if (count($errors) == 0) {
             return true;
          } else {

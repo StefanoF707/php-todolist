@@ -107,7 +107,14 @@ let app = new Vue({
                   this.createNewProj = false;
             } else {
                this.errors = [];
-               this.errors.push('Il nome del progetto non può essere vuoto');
+
+               if (this.projectsOpt.newProject = '') {
+                  this.errors.push('Il nome del progetto non può essere vuoto');
+               }
+
+               if (this.projectsOpt.newProject.length > 45) {
+                  this.errors.push("Il nome del progetto non può essere più lungo di 45 caratteri")
+               }
             }
          },
 
@@ -138,7 +145,14 @@ let app = new Vue({
                   this.projectsOpt.editinput = false;
             } else {
                this.errors = [];
-               this.errors.push('Il nome del progetto non può essere vuoto');
+
+               if (this.projectsOpt.editProject = '') {
+                  this.errors.push('Il nome del progetto non può essere vuoto');
+               }
+
+               if (this.projectsOpt.editProject.length > 45) {
+                  this.errors.push("Il nome del progetto non può essere più lungo di 45 caratteri")
+               }
             }
          },
 
@@ -393,6 +407,7 @@ let app = new Vue({
                   }
                })
                .then( response => {
+                  console.log(response.data);
                   this.results = response.data.results;
                   this.categories = response.data.categories;
                } )
@@ -496,8 +511,6 @@ let app = new Vue({
                this.results = response.data.results;
                this.categories = response.data.categories;
                this.showPage = true;
-
-               console.log(dayjs().format('YYYY-MM-DD'));
             } );
       },
 
