@@ -32,7 +32,7 @@
          }
 
          if (strlen($request['title']) > 45) {
-            $errors[] = 'Il nome della sottoattività può avere massimo 45 caratteri';
+            $errors[] = 'Il nome della sottoattività può avere massimo 45 caratteri"';
          }
 
          if(count($errors) == 0) {
