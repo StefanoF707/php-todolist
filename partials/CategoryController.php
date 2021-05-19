@@ -5,12 +5,20 @@
 
    if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-      $category->storeCategory($_REQUEST);
+      $validation = $category->categoryValidator($_REQUEST);
+
+      if (is_array($validation)) {
+         echo json_encode($validation);
+         http_response_code(206);
+      } else {
+         $category->storeCategory($_REQUEST);
+         require_once __DIR__ . './DatabaseController.php';
+      }
+
    } else {
       echo 'errore';
    }
 
-   require_once __DIR__ . './DatabaseController.php';
 
 
 ?>

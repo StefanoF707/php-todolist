@@ -47,7 +47,7 @@
 
          
          if (!$this->validateDate($request['deadline'], 'Y-m-d')) {
-            $errors[] = 'La data inserita non è valida';
+            $errors[] = "La data inserita non è valida";
          }
          
          if (date("Y-m-d") > $request['deadline']) {

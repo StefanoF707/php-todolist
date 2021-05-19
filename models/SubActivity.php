@@ -15,6 +15,35 @@
 
 
       /**
+       * Category Validator
+       * 
+       * Gestisce la validazione dei dati per la creazione di una suova sotto-attività
+       * 
+       * @param $request: i dati provenienti dalla chaiamta axios
+       * 
+       * @return bool|array
+       */
+      public function subActivityValidator($request) {
+
+         $errors = [];
+
+         if ($request['title'] == '') {
+            $errors[] = 'Il nome della sottoattività non può essere vuoto';
+         }
+
+         if (strlen($request['title']) > 45) {
+            $errors[] = 'Il nome della sottoattività può avere massimo 45 caratteri';
+         }
+
+         if(count($errors) == 0) {
+            return true;
+         } else {
+            return $errors;
+         }
+      }
+
+
+      /**
        * Store SubActivity
        * 
        * Permette di salvare una nuova sotto-attività

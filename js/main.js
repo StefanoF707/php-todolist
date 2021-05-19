@@ -13,7 +13,7 @@ let app = new Vue({
             priority: false,
             text: '',
             assigned_to: '',
-            category_id: "",
+            category_id: "-",
          },
          editActivity: {
             title: '',
@@ -21,7 +21,7 @@ let app = new Vue({
             priority: false,
             text: '',
             assigned_to: '',
-            category_id: "",
+            category_id: "-",
          },
       },
       subActivityOpt:{
@@ -61,8 +61,17 @@ let app = new Vue({
                   headers: {"Content-Type": "multipart/form-data" },
                })
                   .then( response => {
-                     this.results = response.data.results;
-                     this.categories = response.data.categories;
+
+                     if (response.status === 200) {
+                        this.errors =[];
+                        this.results = response.data.results;
+                        this.categories = response.data.categories;
+                     } else {
+                        response.data.forEach( error => {
+                           this.errors.push(error);
+                        } );
+                     }
+
                   } )
 
                this.newCategory = "";
@@ -166,7 +175,7 @@ let app = new Vue({
          }, 
 
          createNewActivity(id) {
-            if (this.activityOpt.newActivity.title != '' && this.activityOpt.newActivity.deadline != '' && this.activityOpt.newActivity.maker != '' && this.activityOpt.newActivity.assigned_to != '') {
+            if (this.activityOpt.newActivity.title != '' && this.activityOpt.newActivity.deadline != '' && this.activityOpt.newActivity.category_id != '-' && this.activityOpt.newActivity.maker != '' && this.activityOpt.newActivity.assigned_to != '') {
 
                let bodyFormData = new FormData();
                bodyFormData.append('title', this.activityOpt.newActivity.title);
@@ -223,6 +232,10 @@ let app = new Vue({
                   this.errors.push("Il nome dell'attività può avere massimo 45 caratteri");
                } else {
                   this.activityOpt.newActivity.title.length = '';
+               }
+
+               if (this.activityOpt.newActivity.category_id == "-") {
+                  this.errors.push("Inserire una categoria esistente o crearne una nuova");
                }
 
                if (this.activityOpt.newActivity.deadline != dayjs(this.activityOpt.newActivity.deadline).format('YYYY-MM-DD')) {
@@ -316,14 +329,42 @@ let app = new Vue({
                         }
                      })
                      .then( response => {
-                        this.results = response.data.results;
-                        this.categories = response.data.categories;
+                        if (response.status === 200) {
+                           this.errors =[];
+                           this.results = response.data.results;
+                           this.categories = response.data.categories;
+                        } else {
+                           this.errors = response.data;
+                        }
                      } );
                })
 
                this.massiveActivities = [];
                this.massiveFormOpen = false;
 
+            } else {
+               
+               this.errors = [];
+               
+               if(this.activityOpt.editActivity.title == '') {
+                  this.errors.push("Il nome dell'attività non può essere vuoto");
+               }
+
+               if (this.activityOpt.editActivity.title.length > 45) {
+                  this.errors.push("Il nome dell'attività può avere massimo 45 caratteri");
+               } 
+
+               if (this.activityOpt.editActivity.deadline != dayjs(this.activityOpt.editActivity.deadline).format('YYYY-MM-DD')) {
+                  this.errors.push("La data inserita non è valida");
+               }
+
+               if (dayjs().format('YYYY-MM-DD') > this.activityOpt.editActivity.deadline){
+                  this.errors.push("Inserire una data successiva a quella corrente");
+               }
+                  
+               if (this.activityOpt.editActivity.assigned_to == '') {
+                  this.errors.push("Assegnare il task a qualcuno");
+               }
             }
          },
 
@@ -372,11 +413,27 @@ let app = new Vue({
                   headers: { "Content-Type": "multipart/form-data" },
                   })
                   .then( response => {
-                     this.results = response.data.results;
-                     this.categories = response.data.categories;
+                     if (response.status === 200) {
+                        this.errors =[];
+                        this.results = response.data.results;
+                        this.categories = response.data.categories;
+                     } else {
+                        this.errors = response.data;
+                     }
                   } );
    
                this.subActivityOpt.newSubActivity = '';
+            } else {
+
+               this.errors = [];
+
+               if (this.subActivityOpt.newSubActivity == '') {
+                  this.errors.push('Il nome della sottoattività non può essere vuoto');
+               } 
+
+               if (this.subActvitiyOpt.newSubActivity.length > 45 ) {
+                  this.errors.push('Il nome della sottoattività può avere massimo 45 caratteri');
+               }
             }
          },
    

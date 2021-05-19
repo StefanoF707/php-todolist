@@ -47,7 +47,7 @@
                <div class="form_group">
                   <label for="assigned_to">Categoria:</label>
                   <select v-model="activityOpt.editActivity.category_id">
-                     <option value="" disabled selected="selected">Categoria</option>
+                     <option value="-">Categoria</option>
                      <option v-for="(category, index) in categories" :value="category.id">
                         {{ category.category }}
                      </option>
@@ -122,6 +122,7 @@
                         <div class="form_group">
                            <label for="assigned_to">Categoria:</label>
                            <select v-if="!createCategory" v-model="activityOpt.newActivity.category_id">
+                              <option value="-">Categoria</option>
                               <option v-for="(category, index) in categories" :value="category.id">
                                  {{ category.category }}
                               </option>
@@ -187,7 +188,6 @@
                               <div class="form_group">
                                  <label for="assigned_to">Assegnato a: </label>
                                  <select v-model="activityOpt.editActivity.assigned_to">
-                                    <option value="" disabled selected="selected">Assegna a..</option>
                                     <option v-for="(user, index) in users" v-if="user.logged == '0'" :value="user.name">
                                        {{ user.name }}
                                     </option>
@@ -196,6 +196,7 @@
                               <div class="form_group">
                                  <label for="assigned_to">Categoria:</label>
                                  <select v-model="activityOpt.editActivity.category_id">
+                                    <option value="-">Categoria</option>
                                     <option v-for="(category, index) in categories" :value="category.id">
                                        {{ category.category }}
                                     </option>
